@@ -1,6 +1,10 @@
 import { combineReducers } from "redux";
 import messages from "./messages";
+import settings from "./settings";
+import app from "./app";
 
 export default combineReducers({
-  messages
+  message: messages,
+  settings: settings,
+  app
 });

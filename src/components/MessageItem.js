@@ -1,8 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Emoji from "react-emoji-render";
+import { connect } from "react-redux";
 
-const MessageItem = props => {
+const MessageItem = ({ message }) => {
+  console.log(message);
   return (
     <li
       style={{
@@ -12,12 +13,14 @@ const MessageItem = props => {
         borderRadius: 10
       }}
     >
-      <small>{props.message.username}</small>
-      <div> {<Emoji text={props.message.message} />}</div>
+      <small>{message.username}</small>
+      <div> {<Emoji text={message.message} />}</div>
     </li>
   );
 };
-MessageItem.propTypes = {
-  message: PropTypes.string.isRequired
+
+const mapDispatchToProps = dispatch => {
+  return {};
 };
-export default MessageItem;
+
+export default connect(null, mapDispatchToProps)(MessageItem);

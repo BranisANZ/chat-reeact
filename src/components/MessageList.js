@@ -1,18 +1,45 @@
-import React from "react";
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+
 import MessageItem from "./MessageItem";
-import Emoji from "react-emoji-render";
-import { useSelector } from "react-redux";
 
-const style = { borderColor: "grey", padding: 10, listStyle: "none" };
-
-const MessageList = () => {
-  const messages = useSelector(state => state.messages.messages);
-  console.log(messages);
-
-  const allMessages = messages.map((message, i) => (
-    <MessageItem key={i} index={i} message={message} />
-  ));
-  return <ul style={style}>{allMessages}</ul>;
+const listStyle = {
+  borderColor: "grey",
+  padding: 10,
+  listStyle: "none",
+  height: 400,
+  overflow: "scroll"
 };
 
-export default MessageList;
+export default class MessageList extends Component {
+  static propTypes = {
+    messages: PropTypes.array.isRequired,
+    isPending: PropTypes.bool
+  };
+
+  componentDidUpdate() {
+    const messagesContainer = ReactDOM.findDOMNode(this.messagesContainer);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  render() {
+    return (
+      <ul
+        ref={el => (this.messagesContainer = el)}
+        className="messagelist"
+        style={listStyle}
+      >
+        {this.props.messages.map((message, i) => {
+          return <MessageItem key={i} index={i} message={message} />;
+        })}
+
+        {this.props.isPending && <li> Chargement â</li>}
+
+        {!this.props.isPending && this.props.messages.length === 0 && (
+          <li>Pas de message pour le moment</li>
+        )}
+      </ul>
+    );
+  }
+}

@@ -1,57 +1,77 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addMessage } from "../actions/messages";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { sendMessage } from "./../actions/messages";
+import { FormattedMessage, injectIntl } from "react-intl";
 
-const styleInput = {
-  borderRadius: 10,
+const input = {
   border: "none",
   fontSize: 16,
   padding: 10,
   marginRight: 10,
   flexGrow: 1
 };
-
-const styleButton = {
-  borderRadius: 10,
+const button = {
   cursor: "pointer",
   fontSize: 20,
   color: "#336E7B",
   fontWeight: "bold",
   padding: 10,
+  flexGrow: 1,
   border: "3px solid #336E7B",
   backgroundColor: "transparent"
 };
 
-const MessageBar = props => {
-  const [message, setMessage] = useState("");
-  const dispatch = useDispatch();
-  const loading = useSelector(state => state.messages.loading);
-  const submitForm = event => {
-    event.preventDefault();
-    if (message) {
-      dispatch(addMessage(message, "Branis"));
-      setMessage("");
-    }
-  };
-  const handleChange = e => {
-    setMessage(e.target.value);
-  };
+class MessageBar extends Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <form onSubmit={submitForm}>
-      <div style={{ display: "flex", padding: 10 }}>
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.state = { message: "" };
+  }
+
+  handleChange(e) {
+    this.setState({ message: e.target.value });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    if (this.state.message !== "") {
+      this.props.sendMessage(this.state.message);
+      this.setState({ message: "" });
+    }
+  }
+
+  render() {
+    return (
+      <form
+        onSubmit={this.handleSubmit}
+        style={{ display: "flex", padding: 10 }}
+      >
         <input
-          value={message}
-          onChange={handleChange}
-          placeholder="Entrer votre message"
+          value={this.state.message}
+          onChange={this.handleChange}
+          placeholder={this.props.intl.formatMessage({
+            id: "message.placeholder"
+          })}
           type="text"
-          style={styleInput}
+          style={input}
         />
         <br />
-        <button style={styleButton}>Send</button>
-      </div>
-    </form>
-  );
+        <button type="submit" style={button}>
+          <FormattedMessage id="action.send" />
+        </button>
+      </form>
+    );
+  }
+}
+
+const mapDispatchToProps = {
+  sendMessage
 };
 
-export default MessageBar;
+const connectComponent = connect(null, mapDispatchToProps);
+
+export default injectIntl(connectComponent(MessageBar));

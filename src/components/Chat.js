@@ -1,30 +1,26 @@
-import React, { useState, useEffect } from "react";
-import MessageList from "./MessageList";
+import React from "react";
+import { FormattedMessage } from "react-intl";
+
+import MessageListContainer from "./../containers/MessageListContainer";
 import MessageBar from "./MessageBar";
-import { getMessages } from "../actions/messages";
-const chatStyle = {
-  display: "flex",
-  flexDirection: "column",
+
+const style = {
   borderRadius: 10,
-  width: 500,
-  fontFamily: "Montserrat",
-  backgroundColor: "#A2DED0",
-  padding: 10
+  width: 300,
+  padding: 10,
+  display: "flex",
+  flexDirection: "column"
 };
 
-const titleStyle = {
-  paddingLeft: 10,
-  paddingTop: 10,
-  fontSize: 30
-};
-
-const Chat = () => {
+const Chat = props => {
   return (
-    <div style={chatStyle}>
-      <div style={titleStyle}>Chat2000</div>
+    <div style={{ ...style, backgroundColor: props.colorCode }}>
+      <div>
+        <FormattedMessage id="chat.title" />
+      </div>
 
-      <MessageList />
       <MessageBar />
+      <MessageListContainer />
     </div>
   );
 };
